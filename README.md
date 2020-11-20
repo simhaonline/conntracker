@@ -56,6 +56,10 @@ After compiling the tool you only need to run it on your firewall for the time y
 Example:
  
 ```
+ $ sudo iptables -t raw -A PREROUTING -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+ 
+ $ sudo ip6tables -t raw -A PREROUTING -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+ 
  $ sudo ./conntracker 
  TCPv4 [           0] src = 192.168.100.111 (port=1024) to dst = 157.240.12.54 (port=443) (confirmed)
  TCPv4 [           1] src = 192.168.100.118 (port=1024) to dst = 65.8.205.11 (port=443) (confirmed)
@@ -135,6 +139,8 @@ Example:
 ICMPv4 [           0] src = 192.168.100.152 to dst = 172.217.162.196 (type=0 | code=0) (confirmed)
 ```
 Some things to notice:
+ 
+  * You can add the conntrack match iptables rule anywhere you want and the tool will only know about the connections being tracked by conntrack. Thist might change in a near future (the tool might even add that rule directly in netfilter).
 
   * All insecure ports (higher than 1024) are logged as 1024 so there aren't many duplicates of flows (as its really common for many different source ports to be used in same connections).
   
